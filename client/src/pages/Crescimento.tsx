@@ -29,9 +29,11 @@ import {
   Crown,
   Flame,
   Eye,
+  Share2,
 } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { toast } from "sonner";
+import ShareModal from "@/components/ShareModal";
 
 /* ─── Types ─── */
 type MilestoneStatus = "completed" | "current" | "locked";
@@ -193,6 +195,13 @@ export default function Crescimento() {
   const [expandedMilestone, setExpandedMilestone] = useState<string | null>(null);
   const [showAllBadges, setShowAllBadges] = useState(false);
   const [celebratingBadge, setCelebratingBadge] = useState<string | null>(null);
+  const [shareModalOpen, setShareModalOpen] = useState(false);
+  const [shareData, setShareData] = useState<{
+    type: "level" | "badge" | "milestone";
+    badgeTitle?: string;
+    badgeRarity?: "common" | "rare" | "epic" | "legendary";
+    milestoneTitle?: string;
+  }>({ type: "level" });
 
   const completedMilestones = milestones.filter((m) => m.status === "completed");
   const totalXP = completedMilestones.reduce((acc, m) => acc + m.xp, 0) + badges.filter((b) => b.earned).reduce((acc, b) => acc + b.xp, 0);
@@ -212,6 +221,21 @@ export default function Crescimento() {
     } else {
       toast("Conquista bloqueada", { description: badge.description });
     }
+  };
+
+  const openShareLevel = () => {
+    setShareData({ type: "level" });
+    setShareModalOpen(true);
+  };
+
+  const openShareBadge = (badge: Badge) => {
+    setShareData({ type: "badge", badgeTitle: badge.title, badgeRarity: badge.rarity });
+    setShareModalOpen(true);
+  };
+
+  const openShareMilestone = (milestone: Milestone) => {
+    setShareData({ type: "milestone", milestoneTitle: milestone.title });
+    setShareModalOpen(true);
   };
 
   return (
@@ -283,6 +307,19 @@ export default function Crescimento() {
                 </div>
                 <p className="text-xs text-muted-foreground mt-0.5">{totalXP} XP total — {earnedBadges.length} conquistas desbloqueadas</p>
               </div>
+            </div>
+
+            {/* Share Level Button */}
+            <div className="flex items-center gap-3">
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={openShareLevel}
+                className="flex items-center gap-2 px-4 py-2 rounded-lg bg-vpex-green/10 border border-vpex-green/20 text-vpex-green text-xs font-medium hover:bg-vpex-green hover:text-black transition-all"
+              >
+                <Share2 size={14} />
+                Compartilhar
+              </motion.button>
             </div>
 
             {/* Stats */}
@@ -383,9 +420,11 @@ export default function Crescimento() {
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: i * 0.08, duration: 0.4 }}
                 >
-                  <button
+                  <div
                     onClick={() => setExpandedMilestone(isExpanded ? null : m.id)}
-                    className="w-full flex items-start gap-4 text-left group"
+                    className="w-full flex items-start gap-4 text-left group cursor-pointer"
+                    role="button"
+                    tabIndex={0}
                   >
                     {/* Checkpoint Node */}
                     <div className="relative z-10 shrink-0">
@@ -447,6 +486,14 @@ export default function Crescimento() {
                           {isCompleted ? "Concluído" : isCurrent ? "Em andamento" : "Bloqueado"}
                         </span>
                         <span className="text-[10px] text-vpex-green font-medium">+{m.xp} XP</span>
+                        {isCompleted && (
+                          <button
+                            onClick={(e) => { e.stopPropagation(); openShareMilestone(m); }}
+                            className="w-5 h-5 rounded-full bg-vpex-green/10 flex items-center justify-center hover:bg-vpex-green/30 transition-colors"
+                          >
+                            <Share2 size={8} className="text-vpex-green" />
+                          </button>
+                        )}
                       </div>
                       <p className="text-xs text-muted-foreground mt-0.5">{m.description}</p>
                       <div className="flex items-center gap-3 mt-1">
@@ -483,7 +530,7 @@ export default function Crescimento() {
                         )}
                       </div>
                     )}
-                  </button>
+                  </div>
                 </motion.div>
               );
             })}
@@ -516,7 +563,7 @@ export default function Crescimento() {
                 const isCelebrating = celebratingBadge === badge.id;
 
                 return (
-                  <motion.button
+                  <motion.div
                     key={badge.id}
                     layout
                     initial={{ opacity: 0, scale: 0.8 }}
@@ -525,7 +572,9 @@ export default function Crescimento() {
                     whileHover={{ scale: badge.earned ? 1.03 : 1 }}
                     whileTap={{ scale: 0.97 }}
                     onClick={() => handleBadgeClick(badge)}
-                    className={`relative p-3 rounded-xl text-center border transition-all ${
+                    role="button"
+                    tabIndex={0}
+                    className={`relative p-3 rounded-xl text-center border transition-all cursor-pointer ${
                       badge.earned
                         ? `${config.bg} ${config.border} ${config.glow}`
                         : "bg-muted/20 border-border opacity-40 grayscale"
@@ -571,7 +620,15 @@ export default function Crescimento() {
                     </p>
                     <p className="text-[10px] text-muted-foreground mt-0.5">{badge.description}</p>
                     {badge.earned && badge.earnedDate && (
-                      <p className="text-[9px] text-vpex-green mt-1 font-medium">Desbloqueado em {badge.earnedDate}</p>
+                      <div className="flex items-center justify-between mt-1">
+                        <p className="text-[9px] text-vpex-green font-medium">Desbloqueado em {badge.earnedDate}</p>
+                        <button
+                          onClick={(e) => { e.stopPropagation(); openShareBadge(badge); }}
+                          className="w-5 h-5 rounded-full bg-vpex-green/10 flex items-center justify-center hover:bg-vpex-green/30 transition-colors"
+                        >
+                          <Share2 size={8} className="text-vpex-green" />
+                        </button>
+                      </div>
                     )}
                     {!badge.earned && (
                       <div className="flex items-center justify-center gap-1 mt-1">
@@ -579,7 +636,7 @@ export default function Crescimento() {
                         <span className="text-[9px] text-muted-foreground">+{badge.xp} XP</span>
                       </div>
                     )}
-                  </motion.button>
+                  </motion.div>
                 );
               })}
             </AnimatePresence>
@@ -645,6 +702,23 @@ export default function Crescimento() {
           </div>
         </div>
       </div>
+      {/* Share Modal */}
+      <ShareModal
+        isOpen={shareModalOpen}
+        onClose={() => setShareModalOpen(false)}
+        data={{
+          type: shareData.type,
+          level: currentLevel,
+          totalXP,
+          badgesEarned: earnedBadges.length,
+          milestonesCompleted: completedMilestones.length,
+          totalMilestones: milestones.length,
+          badgeTitle: shareData.badgeTitle,
+          badgeRarity: shareData.badgeRarity,
+          milestoneTitle: shareData.milestoneTitle,
+          earnedBadges: earnedBadges.map((b) => ({ title: b.title, rarity: b.rarity })),
+        }}
+      />
     </div>
   );
 }
