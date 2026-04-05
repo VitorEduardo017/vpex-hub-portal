@@ -17,6 +17,7 @@ import {
   GraduationCap,
   Rocket,
   Brain,
+  Crown,
   Bell,
   ChevronLeft,
   ChevronRight,
@@ -52,6 +53,7 @@ const navGroups: NavGroup[] = [
       { label: "Documentos", icon: FolderOpen, path: "/documentos" },
       { label: "Entregas", icon: Package, path: "/entregas" },
       { label: "Integrações", icon: Plug, path: "/integracoes" },
+      { label: "Planos", icon: Crown, path: "/planos" },
     ],
   },
   {

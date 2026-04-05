@@ -16,6 +16,7 @@ import Crescimento from "./pages/Crescimento";
 import Perfil from "./pages/Perfil";
 import Integracoes from "./pages/Integracoes";
 import Inteligencia from "./pages/Inteligencia";
+import Planos from "./pages/Planos";
 
 function Router() {
   return (
@@ -30,6 +31,7 @@ function Router() {
       <Route path="/crescimento" component={Crescimento} />
       <Route path="/integracoes" component={Integracoes} />
       <Route path="/inteligencia" component={Inteligencia} />
+      <Route path="/planos" component={Planos} />
       <Route path="/perfil" component={Perfil} />
       <Route path="/404" component={NotFound} />
       <Route component={NotFound} />
