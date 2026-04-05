@@ -5,6 +5,7 @@ import { Route, Switch } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import DashboardLayout from "./components/DashboardLayout";
+import AdminLayout from "./components/AdminLayout";
 import Dashboard from "./pages/Dashboard";
 import Relatorios from "./pages/Relatorios";
 import Documentos from "./pages/Documentos";
@@ -24,6 +25,8 @@ import Indicacao from "./pages/Indicacao";
 import Responsabilidades from "./pages/Responsabilidades";
 import Equipe from "./pages/Equipe";
 import Suporte from "./pages/Suporte";
+import Admin from "./pages/Admin";
+import AdminPlaceholder from "./pages/AdminPlaceholder";
 
 function DashboardRouter() {
   return (
@@ -52,6 +55,25 @@ function DashboardRouter() {
   );
 }
 
+function AdminRouter() {
+  return (
+    <AdminLayout>
+      <Switch>
+        <Route path="/admin" component={Admin} />
+        <Route path="/admin/clientes" component={Admin} />
+        <Route path="/admin/relatorios">{() => <AdminPlaceholder title="Relatórios Consolidados" />}</Route>
+        <Route path="/admin/financeiro">{() => <AdminPlaceholder title="Financeiro & MRR" />}</Route>
+        <Route path="/admin/tarefas">{() => <AdminPlaceholder title="Gestão de Tarefas" />}</Route>
+        <Route path="/admin/campanhas">{() => <AdminPlaceholder title="Campanhas dos Clientes" />}</Route>
+        <Route path="/admin/integracoes">{() => <AdminPlaceholder title="Integrações Globais" />}</Route>
+        <Route path="/admin/alertas">{() => <AdminPlaceholder title="Central de Alertas" />}</Route>
+        <Route path="/admin/configuracoes">{() => <AdminPlaceholder title="Configurações Admin" />}</Route>
+        <Route component={NotFound} />
+      </Switch>
+    </AdminLayout>
+  );
+}
+
 function App() {
   return (
     <ErrorBoundary>
@@ -61,6 +83,8 @@ function App() {
           <Switch>
             <Route path="/login" component={Login} />
             <Route path="/onboarding" component={Onboarding} />
+            <Route path="/admin/:rest*" component={AdminRouter} />
+            <Route path="/admin" component={AdminRouter} />
             <Route component={DashboardRouter} />
           </Switch>
         </TooltipProvider>
