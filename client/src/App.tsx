@@ -20,6 +20,10 @@ import Planos from "./pages/Planos";
 import Configuracoes from "./pages/Configuracoes";
 import Login from "./pages/Login";
 import Onboarding from "./pages/Onboarding";
+import Indicacao from "./pages/Indicacao";
+import Responsabilidades from "./pages/Responsabilidades";
+import Equipe from "./pages/Equipe";
+import Suporte from "./pages/Suporte";
 
 function DashboardRouter() {
   return (
@@ -38,6 +42,10 @@ function DashboardRouter() {
         <Route path="/planos" component={Planos} />
         <Route path="/configuracoes" component={Configuracoes} />
         <Route path="/perfil" component={Perfil} />
+        <Route path="/indicacao" component={Indicacao} />
+        <Route path="/responsabilidades" component={Responsabilidades} />
+        <Route path="/equipe" component={Equipe} />
+        <Route path="/suporte" component={Suporte} />
         <Route component={NotFound} />
       </Switch>
     </DashboardLayout>
