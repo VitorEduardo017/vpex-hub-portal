@@ -16,6 +16,7 @@ import {
   ShoppingCart,
   GraduationCap,
   Rocket,
+  Brain,
   Bell,
   ChevronLeft,
   ChevronRight,
@@ -65,6 +66,7 @@ const navGroups: NavGroup[] = [
     items: [
       { label: "Academy", icon: GraduationCap, path: "/academy" },
       { label: "Crescimento", icon: Rocket, path: "/crescimento" },
+      { label: "Inteligência", icon: Brain, path: "/inteligencia" },
     ],
   },
 ];
