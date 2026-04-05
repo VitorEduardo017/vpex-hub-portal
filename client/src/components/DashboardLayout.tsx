@@ -2,6 +2,7 @@
  * DashboardLayout — Glass Cockpit Design
  * Sidebar colapsável com grupos simplificados para usuários não-tech.
  * Header com notificações em tempo real, perfil e status do plano.
+ * Mobile-first: Bottom navigation bar + swipe-friendly sidebar.
  */
 import { useState, type ReactNode } from "react";
 import { useLocation, Link } from "wouter";
@@ -32,8 +33,8 @@ import {
   AlertTriangle,
   TrendingUp,
   Target,
-  ShoppingBag,
   CheckCircle2,
+  MoreHorizontal,
 } from "lucide-react";
 
 interface NavItem {
@@ -89,6 +90,14 @@ const bottomNavItems: NavItem[] = [
   { label: "Configurações", icon: Settings, path: "/configuracoes" },
 ];
 
+/* Mobile bottom bar — 5 most used items */
+const mobileBottomBar: NavItem[] = [
+  { label: "Home", icon: LayoutDashboard, path: "/" },
+  { label: "Relatórios", icon: BarChart3, path: "/relatorios" },
+  { label: "WhatsApp", icon: MessageCircle, path: "/whatsapp" },
+  { label: "Tarefas", icon: ClipboardCheck, path: "/responsabilidades" },
+];
+
 /* ─── Notifications Data ─── */
 interface Notification {
   id: number;
@@ -133,8 +142,8 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
 
   const unreadCount = notifications.filter((n) => !n.read).length;
 
-  const currentPage = [...navGroups.flatMap((g) => g.items), ...bottomNavItems, { label: "Perfil", icon: User, path: "/perfil" }]
-    .find((i) => i.path === location);
+  const allNavItems = [...navGroups.flatMap((g) => g.items), ...bottomNavItems, { label: "Perfil", icon: User, path: "/perfil" }];
+  const currentPage = allNavItems.find((i) => i.path === location);
 
   function markAllRead() {
     setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
@@ -163,7 +172,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
           bg-sidebar border-r border-sidebar-border
           transition-all duration-300 ease-in-out
           ${collapsed ? "lg:w-[72px]" : "lg:w-[260px]"}
-          ${mobileOpen ? "translate-x-0 w-[260px]" : "-translate-x-full lg:translate-x-0"}
+          ${mobileOpen ? "translate-x-0 w-[280px]" : "-translate-x-full lg:translate-x-0"}
         `}
       >
         {/* Logo */}
@@ -184,7 +193,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
           </div>
           <button
             onClick={() => setMobileOpen(false)}
-            className="ml-auto lg:hidden text-muted-foreground hover:text-foreground"
+            className="ml-auto lg:hidden text-muted-foreground hover:text-foreground p-2"
           >
             <X size={20} />
           </button>
@@ -208,7 +217,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
                       <div
                         onClick={() => setMobileOpen(false)}
                         className={`
-                          flex items-center gap-3 px-3 py-2.5 rounded-lg
+                          flex items-center gap-3 px-3 py-3 lg:py-2.5 rounded-lg
                           transition-all duration-200 group relative
                           ${isActive
                             ? "bg-sidebar-accent text-vpex-green"
@@ -251,7 +260,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
                 <div
                   onClick={() => setMobileOpen(false)}
                   className={`
-                    flex items-center gap-3 px-3 py-2.5 rounded-lg
+                    flex items-center gap-3 px-3 py-3 lg:py-2.5 rounded-lg
                     transition-all duration-200 group relative
                     ${isActive
                       ? "bg-sidebar-accent text-vpex-green"
@@ -283,7 +292,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
             <div
               onClick={() => setMobileOpen(false)}
               className={`
-                flex items-center gap-3 px-3 py-2.5 rounded-lg
+                flex items-center gap-3 px-3 py-3 lg:py-2.5 rounded-lg
                 text-sidebar-foreground hover:bg-sidebar-accent/50 hover:text-foreground
                 transition-all duration-200
                 ${collapsed ? "justify-center" : ""}
@@ -312,21 +321,21 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
       {/* Main Content */}
       <div className="flex-1 flex flex-col overflow-hidden">
         {/* Header */}
-        <header className="h-16 border-b border-border flex items-center justify-between px-4 lg:px-6 bg-background/80 backdrop-blur-md shrink-0 relative">
-          <div className="flex items-center gap-4">
+        <header className="h-14 lg:h-16 border-b border-border flex items-center justify-between px-3 lg:px-6 bg-background/80 backdrop-blur-md shrink-0 relative">
+          <div className="flex items-center gap-3">
             <button
               onClick={() => setMobileOpen(true)}
-              className="lg:hidden text-muted-foreground hover:text-foreground"
+              className="lg:hidden text-muted-foreground hover:text-foreground p-1.5 -ml-1"
             >
               <Menu size={22} />
             </button>
             <div>
-              <h1 className="text-lg font-semibold text-foreground font-[Sora]">
+              <h1 className="text-base lg:text-lg font-semibold text-foreground font-[Sora] truncate max-w-[180px] sm:max-w-none">
                 {currentPage?.label || "VPEX Hub"}
               </h1>
             </div>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 lg:gap-3">
             {/* Notification Bell */}
             <div className="relative">
               <button
@@ -355,7 +364,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
                       animate={{ opacity: 1, y: 0, scale: 1 }}
                       exit={{ opacity: 0, y: -8, scale: 0.95 }}
                       transition={{ duration: 0.2 }}
-                      className="absolute right-0 top-12 z-50 w-80 sm:w-96 bg-[#0d0d0d] border border-white/10 rounded-xl shadow-2xl overflow-hidden"
+                      className="absolute right-0 top-12 z-50 w-[calc(100vw-2rem)] sm:w-96 max-w-96 bg-[#0d0d0d] border border-white/10 rounded-xl shadow-2xl overflow-hidden"
                     >
                       {/* Header */}
                       <div className="flex items-center justify-between px-4 py-3 border-b border-white/5">
@@ -371,13 +380,13 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
                             onClick={markAllRead}
                             className="text-[10px] text-vpex-green hover:underline"
                           >
-                            Marcar todas como lidas
+                            Marcar lidas
                           </button>
                         )}
                       </div>
 
                       {/* Notifications List */}
-                      <div className="max-h-80 overflow-y-auto">
+                      <div className="max-h-72 sm:max-h-80 overflow-y-auto">
                         {notifications.map((notif) => {
                           const Icon = notifIcons[notif.type] || Bell;
                           const color = notifColors[notif.type] || "text-muted-foreground";
@@ -432,7 +441,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
         </header>
 
         {/* Page Content */}
-        <main className="flex-1 overflow-y-auto p-4 lg:p-6">
+        <main className="flex-1 overflow-y-auto p-3 lg:p-6 pb-20 lg:pb-6">
           <motion.div
             key={location}
             initial={{ opacity: 0, y: 8 }}
@@ -443,6 +452,35 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
           </motion.div>
         </main>
       </div>
+
+      {/* Mobile Bottom Navigation Bar */}
+      <nav className="fixed bottom-0 left-0 right-0 z-50 lg:hidden bg-[#0a0a0a]/95 backdrop-blur-xl border-t border-white/10">
+        <div className="flex items-center justify-around h-16 px-2 safe-area-inset-bottom">
+          {mobileBottomBar.map((item) => {
+            const isActive = location === item.path;
+            const Icon = item.icon;
+            return (
+              <Link key={item.path} href={item.path}>
+                <div className="flex flex-col items-center gap-0.5 py-1 px-3 min-w-[56px]">
+                  <div className={`p-1.5 rounded-lg transition-all ${isActive ? "bg-vpex-green/15" : ""}`}>
+                    <Icon size={20} className={`${isActive ? "text-vpex-green" : "text-muted-foreground"}`} />
+                  </div>
+                  <span className={`text-[10px] font-medium ${isActive ? "text-vpex-green" : "text-muted-foreground"}`}>
+                    {item.label}
+                  </span>
+                </div>
+              </Link>
+            );
+          })}
+          {/* More button to open sidebar */}
+          <button onClick={() => setMobileOpen(true)} className="flex flex-col items-center gap-0.5 py-1 px-3 min-w-[56px]">
+            <div className="p-1.5 rounded-lg">
+              <MoreHorizontal size={20} className="text-muted-foreground" />
+            </div>
+            <span className="text-[10px] font-medium text-muted-foreground">Mais</span>
+          </button>
+        </div>
+      </nav>
     </div>
   );
 }

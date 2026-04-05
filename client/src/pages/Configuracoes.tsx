@@ -31,11 +31,21 @@ import {
   EyeOff,
   CheckCircle2,
   Info,
+  Users,
+  UserPlus,
+  Shield,
+  MoreVertical,
+  X,
+  Calendar,
+  RefreshCw,
+  Trash2,
+  ArrowRightLeft,
+  Layers,
 } from "lucide-react";
 import { toast } from "sonner";
 
 /* ─── Types ─── */
-type TabId = "empresa" | "notificacoes" | "preferencias" | "seguranca";
+type TabId = "empresa" | "meutime" | "notificacoes" | "preferencias" | "seguranca";
 
 interface Tab {
   id: TabId;
@@ -45,6 +55,7 @@ interface Tab {
 
 const tabs: Tab[] = [
   { id: "empresa", label: "Empresa", icon: Building2 },
+  { id: "meutime", label: "Meu Time", icon: Users },
   { id: "notificacoes", label: "Notificações", icon: Bell },
   { id: "preferencias", label: "Preferências", icon: Palette },
   { id: "seguranca", label: "Segurança", icon: ShieldCheck },
@@ -202,6 +213,19 @@ export default function Configuracoes() {
     animacoes: true,
     somNotificacao: true,
   });
+
+  /* Meu Time State */
+  const [showAddMember, setShowAddMember] = useState(false);
+  const [showMemberDetail, setShowMemberDetail] = useState<number | null>(null);
+  const [teamMembers, setTeamMembers] = useState([
+    { id: 1, name: "Maria Silva", email: "maria@cacaushow.com", role: "Gerente", areas: ["Dashboard", "Relatórios", "Financeiro", "Equipe"], addedAt: "15/01/2026", lastAccess: "Hoje, 14:32", status: "ativo", avatar: "MS", duration: "Permanente" },
+    { id: 2, name: "João Santos", email: "joao@cacaushow.com", role: "Operador", areas: ["Dashboard", "Pedidos", "Estoque"], addedAt: "22/02/2026", lastAccess: "Ontem, 09:15", status: "ativo", avatar: "JS", duration: "6 meses" },
+    { id: 3, name: "Ana Costa", email: "ana@cacaushow.com", role: "Visualizador", areas: ["Dashboard", "Relatórios"], addedAt: "10/03/2026", lastAccess: "Há 3 dias", status: "ativo", avatar: "AC", duration: "Permanente" },
+    { id: 4, name: "Carlos Oliveira", email: "carlos@cacaushow.com", role: "Operador", areas: ["WhatsApp", "Academy"], addedAt: "01/03/2026", lastAccess: "Há 1 semana", status: "inativo", avatar: "CO", duration: "3 meses" },
+  ]);
+  const [newMember, setNewMember] = useState({ name: "", email: "", role: "Visualizador", areas: [] as string[], duration: "Permanente" });
+  const allAreas = ["Dashboard", "Relatórios", "Documentos", "Entregas", "WhatsApp", "Pedidos", "Academy", "Crescimento", "Integrações", "Inteligência", "Financeiro", "Equipe", "Configurações"];
+  const roleColors: Record<string, string> = { "Administrador": "text-[#39FF14] bg-[#39FF14]/10 border-[#39FF14]/30", "Gerente": "text-blue-400 bg-blue-400/10 border-blue-400/30", "Operador": "text-amber-400 bg-amber-400/10 border-amber-400/30", "Visualizador": "text-white/50 bg-white/5 border-white/10" };
 
   /* Segurança State */
   const [showPassword, setShowPassword] = useState(false);
@@ -370,6 +394,168 @@ export default function Configuracoes() {
                 />
               </div>
             </div>
+          </div>
+        )}
+
+        {/* ═══ MEU TIME ═══ */}
+        {activeTab === "meutime" && (
+          <div className="space-y-5">
+            {/* Header */}
+            <div className="glass-card p-5">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-sm font-semibold font-[Sora] text-foreground flex items-center gap-2">
+                  <Users size={14} className="text-vpex-green" />
+                  Funcionários com Acesso ao Hub
+                </h3>
+                <button onClick={() => { setShowAddMember(true); setShowMemberDetail(null); }} className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-vpex-green/10 border border-vpex-green/30 text-vpex-green text-xs font-medium hover:bg-vpex-green/20 transition-all">
+                  <UserPlus size={13} /> Adicionar
+                </button>
+              </div>
+
+              {/* Stats */}
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-4">
+                {[
+                  { label: "Total", value: teamMembers.length, color: "text-foreground" },
+                  { label: "Ativos", value: teamMembers.filter(m => m.status === "ativo").length, color: "text-vpex-green" },
+                  { label: "Inativos", value: teamMembers.filter(m => m.status === "inativo").length, color: "text-amber-400" },
+                  { label: "Temporários", value: teamMembers.filter(m => m.duration !== "Permanente").length, color: "text-blue-400" },
+                ].map((s, i) => (
+                  <div key={i} className="p-3 rounded-lg bg-muted/10 border border-border text-center">
+                    <p className={`text-lg font-bold font-[Sora] ${s.color}`}>{s.value}</p>
+                    <p className="text-[10px] text-muted-foreground">{s.label}</p>
+                  </div>
+                ))}
+              </div>
+
+              {/* Members List */}
+              <div className="space-y-2">
+                {teamMembers.map((member) => (
+                  <div key={member.id} className={`p-3 rounded-xl border transition-all hover:border-vpex-green/20 ${showMemberDetail === member.id ? "border-vpex-green/30 bg-vpex-green/[0.02]" : "border-border bg-muted/5"}`}>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <div className={`w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold ${member.status === "ativo" ? "bg-vpex-green/10 text-vpex-green" : "bg-muted/20 text-muted-foreground"}`}>
+                          {member.avatar}
+                        </div>
+                        <div>
+                          <div className="flex items-center gap-2">
+                            <p className="text-sm font-medium text-foreground">{member.name}</p>
+                            <span className={`px-1.5 py-0.5 rounded text-[9px] font-semibold border ${roleColors[member.role] || roleColors["Visualizador"]}`}>{member.role}</span>
+                            {member.status === "inativo" && <span className="px-1.5 py-0.5 rounded bg-amber-500/10 text-amber-400 text-[9px] font-semibold border border-amber-500/30">Inativo</span>}
+                          </div>
+                          <p className="text-[10px] text-muted-foreground">{member.email} · Adicionado em {member.addedAt}</p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-[10px] text-muted-foreground hidden sm:block">Último acesso: {member.lastAccess}</span>
+                        <button onClick={() => setShowMemberDetail(showMemberDetail === member.id ? null : member.id)} className="p-1.5 rounded-lg hover:bg-muted/20 text-muted-foreground hover:text-foreground transition-colors">
+                          <MoreVertical size={14} />
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Expanded Detail */}
+                    {showMemberDetail === member.id && (
+                      <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} className="mt-3 pt-3 border-t border-border overflow-hidden">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                          <div className="space-y-2">
+                            <p className="text-[11px] font-medium text-muted-foreground flex items-center gap-1"><Shield size={10} /> Função</p>
+                            <select defaultValue={member.role} onChange={(e) => { setTeamMembers(teamMembers.map(m => m.id === member.id ? { ...m, role: e.target.value } : m)); toast.success(`Função de ${member.name} atualizada`); }} className="w-full px-3 py-2 rounded-lg bg-muted/15 border border-border text-xs text-foreground focus:outline-none focus:border-vpex-green/40">
+                              <option value="Administrador">Administrador</option>
+                              <option value="Gerente">Gerente</option>
+                              <option value="Operador">Operador</option>
+                              <option value="Visualizador">Visualizador</option>
+                            </select>
+                          </div>
+                          <div className="space-y-2">
+                            <p className="text-[11px] font-medium text-muted-foreground flex items-center gap-1"><Clock size={10} /> Duração do Acesso</p>
+                            <select defaultValue={member.duration} onChange={(e) => { setTeamMembers(teamMembers.map(m => m.id === member.id ? { ...m, duration: e.target.value } : m)); toast.success(`Duração de ${member.name} atualizada`); }} className="w-full px-3 py-2 rounded-lg bg-muted/15 border border-border text-xs text-foreground focus:outline-none focus:border-vpex-green/40">
+                              <option value="Permanente">Permanente</option>
+                              <option value="1 mês">1 mês</option>
+                              <option value="3 meses">3 meses</option>
+                              <option value="6 meses">6 meses</option>
+                              <option value="1 ano">1 ano</option>
+                            </select>
+                          </div>
+                        </div>
+                        <div className="mt-3 space-y-2">
+                          <p className="text-[11px] font-medium text-muted-foreground flex items-center gap-1"><Layers size={10} /> Áreas com Acesso</p>
+                          <div className="flex flex-wrap gap-1.5">
+                            {allAreas.map((area) => { const hasAccess = member.areas.includes(area); return (
+                              <button key={area} onClick={() => { const updated = hasAccess ? member.areas.filter(a => a !== area) : [...member.areas, area]; setTeamMembers(teamMembers.map(m => m.id === member.id ? { ...m, areas: updated } : m)); }} className={`px-2 py-1 rounded text-[10px] font-medium border transition-all ${hasAccess ? "border-vpex-green/30 bg-vpex-green/10 text-vpex-green" : "border-border bg-muted/5 text-muted-foreground hover:border-white/20"}`}>
+                                {hasAccess && <CheckCircle2 size={8} className="inline mr-0.5" />}{area}
+                              </button>
+                            ); })}
+                          </div>
+                        </div>
+                        <div className="mt-3 pt-3 border-t border-border flex flex-wrap gap-2">
+                          <button onClick={() => { setTeamMembers(teamMembers.map(m => m.id === member.id ? { ...m, status: m.status === "ativo" ? "inativo" : "ativo" } : m)); toast.success(`${member.name} ${member.status === "ativo" ? "desativado" : "reativado"}`); }} className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg border border-border text-[10px] font-medium text-muted-foreground hover:text-foreground hover:border-white/20 transition-all">
+                            <RefreshCw size={10} /> {member.status === "ativo" ? "Desativar" : "Reativar"}
+                          </button>
+                          <button onClick={() => toast("Realocar", { description: `Selecione a nova área para ${member.name}` })} className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg border border-border text-[10px] font-medium text-muted-foreground hover:text-blue-400 hover:border-blue-400/30 transition-all">
+                            <ArrowRightLeft size={10} /> Realocar
+                          </button>
+                          <button onClick={() => toast("Substituir", { description: `Escolha quem substituirá ${member.name}` })} className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg border border-border text-[10px] font-medium text-muted-foreground hover:text-amber-400 hover:border-amber-400/30 transition-all">
+                            <Users size={10} /> Substituir
+                          </button>
+                          <button onClick={() => { setTeamMembers(teamMembers.filter(m => m.id !== member.id)); toast.success(`${member.name} removido do Hub`); setShowMemberDetail(null); }} className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg border border-red-500/20 text-[10px] font-medium text-red-400 hover:bg-red-500/10 transition-all ml-auto">
+                            <Trash2 size={10} /> Remover
+                          </button>
+                        </div>
+                      </motion.div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Add Member Modal */}
+            {showAddMember && (
+              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={() => setShowAddMember(false)}>
+                <motion.div initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} onClick={(e) => e.stopPropagation()} className="w-full max-w-md rounded-2xl bg-card border border-border p-5 space-y-4">
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-sm font-semibold font-[Sora] text-foreground flex items-center gap-2"><UserPlus size={14} className="text-vpex-green" /> Adicionar Membro</h3>
+                    <button onClick={() => setShowAddMember(false)} className="p-1 rounded-lg hover:bg-muted/20 text-muted-foreground"><X size={14} /></button>
+                  </div>
+                  <div className="space-y-3">
+                    <InputField label="Nome Completo" value={newMember.name} onChange={(v) => setNewMember({ ...newMember, name: v })} icon={Users} placeholder="Ex: Maria Silva" />
+                    <InputField label="E-mail" value={newMember.email} onChange={(v) => setNewMember({ ...newMember, email: v })} icon={Mail} placeholder="maria@empresa.com" type="email" />
+                    <div className="space-y-1.5">
+                      <label className="text-xs font-medium text-muted-foreground flex items-center gap-1.5"><Shield size={12} /> Função</label>
+                      <select value={newMember.role} onChange={(e) => setNewMember({ ...newMember, role: e.target.value })} className="w-full px-3 py-2.5 rounded-lg bg-muted/15 border border-border text-sm text-foreground focus:outline-none focus:border-vpex-green/40">
+                        <option value="Administrador">Administrador</option>
+                        <option value="Gerente">Gerente</option>
+                        <option value="Operador">Operador</option>
+                        <option value="Visualizador">Visualizador</option>
+                      </select>
+                    </div>
+                    <div className="space-y-1.5">
+                      <label className="text-xs font-medium text-muted-foreground flex items-center gap-1.5"><Clock size={12} /> Duração do Acesso</label>
+                      <select value={newMember.duration} onChange={(e) => setNewMember({ ...newMember, duration: e.target.value })} className="w-full px-3 py-2.5 rounded-lg bg-muted/15 border border-border text-sm text-foreground focus:outline-none focus:border-vpex-green/40">
+                        <option value="Permanente">Permanente</option>
+                        <option value="1 mês">1 mês</option>
+                        <option value="3 meses">3 meses</option>
+                        <option value="6 meses">6 meses</option>
+                        <option value="1 ano">1 ano</option>
+                      </select>
+                    </div>
+                    <div className="space-y-1.5">
+                      <label className="text-xs font-medium text-muted-foreground">Áreas com Acesso</label>
+                      <div className="flex flex-wrap gap-1.5">
+                        {allAreas.map((area) => { const sel = newMember.areas.includes(area); return (
+                          <button key={area} onClick={() => setNewMember({ ...newMember, areas: sel ? newMember.areas.filter(a => a !== area) : [...newMember.areas, area] })} className={`px-2 py-1 rounded text-[10px] font-medium border transition-all ${sel ? "border-vpex-green/30 bg-vpex-green/10 text-vpex-green" : "border-border bg-muted/5 text-muted-foreground hover:border-white/20"}`}>
+                            {sel && <CheckCircle2 size={8} className="inline mr-0.5" />}{area}
+                          </button>
+                        ); })}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex gap-2 pt-2">
+                    <button onClick={() => setShowAddMember(false)} className="flex-1 px-4 py-2.5 rounded-lg border border-border text-xs font-medium text-muted-foreground hover:text-foreground transition-colors">Cancelar</button>
+                    <button onClick={() => { if (!newMember.name || !newMember.email) { toast.error("Preencha nome e e-mail"); return; } setTeamMembers([...teamMembers, { id: Date.now(), name: newMember.name, email: newMember.email, role: newMember.role, areas: newMember.areas, addedAt: new Date().toLocaleDateString("pt-BR"), lastAccess: "Nunca", status: "ativo", avatar: newMember.name.split(" ").map(n => n[0]).join("").slice(0, 2).toUpperCase(), duration: newMember.duration }]); setNewMember({ name: "", email: "", role: "Visualizador", areas: [], duration: "Permanente" }); setShowAddMember(false); toast.success(`${newMember.name} adicionado ao Hub`); }} className="flex-1 px-4 py-2.5 rounded-lg bg-vpex-green text-black text-xs font-bold hover:shadow-[0_0_20px_rgba(57,255,20,0.3)] transition-all">Adicionar Membro</button>
+                  </div>
+                </motion.div>
+              </motion.div>
+            )}
           </div>
         )}
 
