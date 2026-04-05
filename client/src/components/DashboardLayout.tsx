@@ -10,6 +10,7 @@ import {
   LayoutDashboard,
   BarChart3,
   FolderOpen,
+  Plug,
   Package,
   MessageCircle,
   ShoppingCart,
@@ -49,6 +50,7 @@ const navGroups: NavGroup[] = [
     items: [
       { label: "Documentos", icon: FolderOpen, path: "/documentos" },
       { label: "Entregas", icon: Package, path: "/entregas" },
+      { label: "Integrações", icon: Plug, path: "/integracoes" },
     ],
   },
   {

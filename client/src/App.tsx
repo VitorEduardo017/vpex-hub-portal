@@ -14,6 +14,7 @@ import Pedidos from "./pages/Pedidos";
 import Academy from "./pages/Academy";
 import Crescimento from "./pages/Crescimento";
 import Perfil from "./pages/Perfil";
+import Integracoes from "./pages/Integracoes";
 
 function Router() {
   return (
@@ -26,6 +27,7 @@ function Router() {
       <Route path="/pedidos" component={Pedidos} />
       <Route path="/academy" component={Academy} />
       <Route path="/crescimento" component={Crescimento} />
+      <Route path="/integracoes" component={Integracoes} />
       <Route path="/perfil" component={Perfil} />
       <Route path="/404" component={NotFound} />
       <Route component={NotFound} />
