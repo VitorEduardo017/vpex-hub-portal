@@ -18,26 +18,28 @@ import Integracoes from "./pages/Integracoes";
 import Inteligencia from "./pages/Inteligencia";
 import Planos from "./pages/Planos";
 import Configuracoes from "./pages/Configuracoes";
+import Login from "./pages/Login";
 
-function Router() {
+function DashboardRouter() {
   return (
-    <Switch>
-      <Route path="/" component={Dashboard} />
-      <Route path="/relatorios" component={Relatorios} />
-      <Route path="/documentos" component={Documentos} />
-      <Route path="/entregas" component={Entregas} />
-      <Route path="/whatsapp" component={WhatsApp} />
-      <Route path="/pedidos" component={Pedidos} />
-      <Route path="/academy" component={Academy} />
-      <Route path="/crescimento" component={Crescimento} />
-      <Route path="/integracoes" component={Integracoes} />
-      <Route path="/inteligencia" component={Inteligencia} />
-      <Route path="/planos" component={Planos} />
-      <Route path="/configuracoes" component={Configuracoes} />
-      <Route path="/perfil" component={Perfil} />
-      <Route path="/404" component={NotFound} />
-      <Route component={NotFound} />
-    </Switch>
+    <DashboardLayout>
+      <Switch>
+        <Route path="/" component={Dashboard} />
+        <Route path="/relatorios" component={Relatorios} />
+        <Route path="/documentos" component={Documentos} />
+        <Route path="/entregas" component={Entregas} />
+        <Route path="/whatsapp" component={WhatsApp} />
+        <Route path="/pedidos" component={Pedidos} />
+        <Route path="/academy" component={Academy} />
+        <Route path="/crescimento" component={Crescimento} />
+        <Route path="/integracoes" component={Integracoes} />
+        <Route path="/inteligencia" component={Inteligencia} />
+        <Route path="/planos" component={Planos} />
+        <Route path="/configuracoes" component={Configuracoes} />
+        <Route path="/perfil" component={Perfil} />
+        <Route component={NotFound} />
+      </Switch>
+    </DashboardLayout>
   );
 }
 
@@ -47,9 +49,10 @@ function App() {
       <ThemeProvider defaultTheme="dark">
         <TooltipProvider>
           <Toaster />
-          <DashboardLayout>
-            <Router />
-          </DashboardLayout>
+          <Switch>
+            <Route path="/login" component={Login} />
+            <Route component={DashboardRouter} />
+          </Switch>
         </TooltipProvider>
       </ThemeProvider>
     </ErrorBoundary>
