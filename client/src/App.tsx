@@ -29,6 +29,7 @@ import Admin from "./pages/Admin";
 import AdminPlaceholder from "./pages/AdminPlaceholder";
 
 function DashboardRouter() {
+  // make sure to consider if you need authentication for certain routes
   return (
     <DashboardLayout>
       <Switch>
