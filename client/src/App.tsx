@@ -17,6 +17,7 @@ import Perfil from "./pages/Perfil";
 import Integracoes from "./pages/Integracoes";
 import Inteligencia from "./pages/Inteligencia";
 import Planos from "./pages/Planos";
+import Configuracoes from "./pages/Configuracoes";
 
 function Router() {
   return (
@@ -32,6 +33,7 @@ function Router() {
       <Route path="/integracoes" component={Integracoes} />
       <Route path="/inteligencia" component={Inteligencia} />
       <Route path="/planos" component={Planos} />
+      <Route path="/configuracoes" component={Configuracoes} />
       <Route path="/perfil" component={Perfil} />
       <Route path="/404" component={NotFound} />
       <Route component={NotFound} />

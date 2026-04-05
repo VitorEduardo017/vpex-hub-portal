@@ -18,6 +18,7 @@ import {
   Rocket,
   Brain,
   Crown,
+  Settings,
   Bell,
   ChevronLeft,
   ChevronRight,
@@ -73,13 +74,16 @@ const navGroups: NavGroup[] = [
   },
 ];
 
+const bottomNavItems: NavItem[] = [
+  { label: "Configurações", icon: Settings, path: "/configuracoes" },
+];
+
 export default function DashboardLayout({ children }: { children: ReactNode }) {
   const [location] = useLocation();
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
 
-  const currentPage = navGroups
-    .flatMap((g) => g.items)
+  const currentPage = [...navGroups.flatMap((g) => g.items), ...bottomNavItems]
     .find((i) => i.path === location);
 
   return (
@@ -186,6 +190,43 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
 
         {/* Footer */}
         <div className="border-t border-sidebar-border p-3 space-y-2">
+          {/* Configurações */}
+          {bottomNavItems.map((item) => {
+            const isActive = location === item.path;
+            const Icon = item.icon;
+            return (
+              <Link key={item.path} href={item.path}>
+                <div
+                  onClick={() => setMobileOpen(false)}
+                  className={`
+                    flex items-center gap-3 px-3 py-2.5 rounded-lg
+                    transition-all duration-200 group relative
+                    ${isActive
+                      ? "bg-sidebar-accent text-vpex-green"
+                      : "text-sidebar-foreground hover:bg-sidebar-accent/50 hover:text-foreground"
+                    }
+                    ${collapsed ? "justify-center" : ""}
+                  `}
+                >
+                  <Icon
+                    size={20}
+                    className={`shrink-0 ${isActive ? "text-vpex-green" : "text-muted-foreground group-hover:text-foreground"}`}
+                  />
+                  {!collapsed && (
+                    <span className="text-sm font-medium whitespace-nowrap">
+                      {item.label}
+                    </span>
+                  )}
+                  {isActive && (
+                    <motion.div
+                      layoutId="sidebar-active"
+                      className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-6 rounded-r-full bg-vpex-green"
+                    />
+                  )}
+                </div>
+              </Link>
+            );
+          })}
           <Link href="/perfil">
             <div
               onClick={() => setMobileOpen(false)}
