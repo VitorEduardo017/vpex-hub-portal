@@ -44,3 +44,14 @@
 - [ ] Implementar fluxo de recuperação de senha
 - [ ] Filtro global de loja para multi-unidades
 - [ ] Sub-páginas do Admin (Relatórios, Financeiro, Tarefas, etc.)
+
+## Schema do Banco de Dados & KPIs
+- [x] Analisar todas as páginas para mapear dados necessários
+- [x] Projetar schema completo (tabelas de franqueados, KPIs, métricas)
+- [x] Implementar schema no Drizzle (drizzle/schema.ts)
+- [x] Executar migrations (pnpm db:push)
+- [x] Criar helpers de query (server/db.ts)
+- [x] Criar routers tRPC para expor dados ao frontend
+- [ ] Conectar Dashboard ao backend com dados reais (aguardando aprovação do frontend)
+- [x] Criar seed script com dados de exemplo
+- [x] Escrever testes vitest para os novos routers
