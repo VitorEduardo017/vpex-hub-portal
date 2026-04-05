@@ -19,6 +19,7 @@ import Inteligencia from "./pages/Inteligencia";
 import Planos from "./pages/Planos";
 import Configuracoes from "./pages/Configuracoes";
 import Login from "./pages/Login";
+import Onboarding from "./pages/Onboarding";
 
 function DashboardRouter() {
   return (
@@ -51,6 +52,7 @@ function App() {
           <Toaster />
           <Switch>
             <Route path="/login" component={Login} />
+            <Route path="/onboarding" component={Onboarding} />
             <Route component={DashboardRouter} />
           </Switch>
         </TooltipProvider>
