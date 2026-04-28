@@ -1,53 +1,98 @@
-import { COOKIE_NAME, ONE_YEAR_MS } from "@shared/const";
+import { COOKIE_NAME } from "@shared/const";
 import type { Express, Request, Response } from "express";
+import bcrypt from "bcryptjs";
+import { nanoid } from "nanoid";
 import * as db from "../db";
 import { getSessionCookieOptions } from "./cookies";
 import { sdk } from "./sdk";
+import { ENV } from "./env";
 
-function getQueryParam(req: Request, key: string): string | undefined {
-  const value = req.query[key];
-  return typeof value === "string" ? value : undefined;
+function json400(res: Response, message: string) {
+  return res.status(400).json({ error: message });
 }
 
 export function registerOAuthRoutes(app: Express) {
-  app.get("/api/oauth/callback", async (req: Request, res: Response) => {
-    const code = getQueryParam(req, "code");
-    const state = getQueryParam(req, "state");
+  /* ── POST /api/auth/register ── */
+  app.post("/api/auth/register", async (req: Request, res: Response) => {
+    const { email, password, name } = req.body ?? {};
 
-    if (!code || !state) {
-      res.status(400).json({ error: "code and state are required" });
-      return;
+    if (!email || !password || !name) {
+      return json400(res, "Nome, email e senha são obrigatórios");
+    }
+    if (typeof password !== "string" || password.length < 6) {
+      return json400(res, "Senha deve ter pelo menos 6 caracteres");
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      return json400(res, "Email inválido");
     }
 
-    try {
-      const tokenResponse = await sdk.exchangeCodeForToken(code, state);
-      const userInfo = await sdk.getUserInfo(tokenResponse.accessToken);
-
-      if (!userInfo.openId) {
-        res.status(400).json({ error: "openId missing from user info" });
-        return;
-      }
-
-      await db.upsertUser({
-        openId: userInfo.openId,
-        name: userInfo.name || null,
-        email: userInfo.email ?? null,
-        loginMethod: userInfo.loginMethod ?? userInfo.platform ?? null,
-        lastSignedIn: new Date(),
-      });
-
-      const sessionToken = await sdk.createSessionToken(userInfo.openId, {
-        name: userInfo.name || "",
-        expiresInMs: ONE_YEAR_MS,
-      });
-
-      const cookieOptions = getSessionCookieOptions(req);
-      res.cookie(COOKIE_NAME, sessionToken, { ...cookieOptions, maxAge: ONE_YEAR_MS });
-
-      res.redirect(302, "/");
-    } catch (error) {
-      console.error("[OAuth] Callback failed", error);
-      res.status(500).json({ error: "OAuth callback failed" });
+    const existing = await db.getUserByEmail(email);
+    if (existing) {
+      return json400(res, "Email já cadastrado");
     }
+
+    const passwordHash = await bcrypt.hash(password, 12);
+    const openId = nanoid(24);
+
+    const isOwner = ENV.ownerOpenId && ENV.ownerOpenId === openId;
+    await db.upsertUser({
+      openId,
+      name: String(name).trim(),
+      email: String(email).toLowerCase().trim(),
+      passwordHash,
+      loginMethod: "email",
+      role: isOwner ? "admin" : "user",
+      lastSignedIn: new Date(),
+    });
+
+    const token = await sdk.createSessionToken(openId, {
+      name: String(name).trim(),
+    });
+
+    res.cookie(COOKIE_NAME, token, {
+      ...getSessionCookieOptions(req),
+      maxAge: 365 * 24 * 60 * 60 * 1000,
+    });
+
+    const user = await db.getUserByOpenId(openId);
+    return res.json({ success: true, user: { name: user?.name, email: user?.email, role: user?.role } });
+  });
+
+  /* ── POST /api/auth/login ── */
+  app.post("/api/auth/login", async (req: Request, res: Response) => {
+    const { email, password } = req.body ?? {};
+
+    if (!email || !password) {
+      return json400(res, "Email e senha são obrigatórios");
+    }
+
+    const user = await db.getUserByEmail(email);
+    if (!user || !user.passwordHash) {
+      return json400(res, "Email ou senha inválidos");
+    }
+
+    const valid = await bcrypt.compare(password, user.passwordHash);
+    if (!valid) {
+      return json400(res, "Email ou senha inválidos");
+    }
+
+    const token = await sdk.createSessionToken(user.openId, {
+      name: user.name ?? "",
+    });
+
+    res.cookie(COOKIE_NAME, token, {
+      ...getSessionCookieOptions(req),
+      maxAge: 365 * 24 * 60 * 60 * 1000,
+    });
+
+    await db.upsertUser({ openId: user.openId, lastSignedIn: new Date() });
+
+    return res.json({ success: true, user: { name: user.name, email: user.email, role: user.role } });
+  });
+
+  /* ── POST /api/auth/logout ── */
+  app.post("/api/auth/logout", (req: Request, res: Response) => {
+    res.clearCookie(COOKIE_NAME, { ...getSessionCookieOptions(req), maxAge: -1 });
+    return res.json({ success: true });
   });
 }
