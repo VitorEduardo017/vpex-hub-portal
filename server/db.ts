@@ -1,3 +1,6 @@
+import dns from "node:dns";
+dns.setDefaultResultOrder("ipv4first");
+
 import { eq, desc, and, gte, lte, asc } from "drizzle-orm";
 import { drizzle, type PostgresJsDatabase } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
@@ -34,6 +37,8 @@ export async function getDb(): Promise<PostgresJsDatabase | null> {
       const client = postgres(url, {
         ssl: "require",
         max: 1,
+        prepare: false,
+        connect_timeout: 10,
         idle_timeout: 20,
         max_lifetime: 60 * 30,
       });

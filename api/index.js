@@ -14,6 +14,7 @@ import bcrypt from "bcryptjs";
 import { nanoid } from "nanoid";
 
 // server/db.ts
+import dns from "node:dns";
 import { eq, desc, and, gte, lte, asc } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
@@ -296,6 +297,7 @@ var ENV = {
 };
 
 // server/db.ts
+dns.setDefaultResultOrder("ipv4first");
 var _db = null;
 async function getDb() {
   const url = process.env.DATABASE_URL?.trim();
@@ -304,6 +306,8 @@ async function getDb() {
       const client = postgres(url, {
         ssl: "require",
         max: 1,
+        prepare: false,
+        connect_timeout: 10,
         idle_timeout: 20,
         max_lifetime: 60 * 30
       });
