@@ -35,6 +35,7 @@ import {
   Target,
   CheckCircle2,
   MoreHorizontal,
+  ShoppingBag,
 } from "lucide-react";
 
 interface NavItem {
@@ -52,7 +53,8 @@ const navGroups: NavGroup[] = [
   {
     title: "Meu Negócio",
     items: [
-      { label: "Dashboard", icon: LayoutDashboard, path: "/" },
+      { label: "Painel Central", icon: LayoutDashboard, path: "/painel" },
+      { label: "Meus Produtos", icon: ShoppingBag, path: "/meus-produtos" },
       { label: "Relatórios", icon: BarChart3, path: "/relatorios" },
     ],
   },
@@ -76,7 +78,7 @@ const navGroups: NavGroup[] = [
   {
     title: "Estratégia",
     items: [
-      { label: "Academy", icon: GraduationCap, path: "/academy" },
+      { label: "Academia", icon: GraduationCap, path: "/academy" },
       { label: "Crescimento", icon: Rocket, path: "/crescimento" },
       { label: "Inteligência", icon: Brain, path: "/inteligencia" },
       { label: "Indicação", icon: Gift, path: "/indicacao" },
@@ -92,7 +94,7 @@ const bottomNavItems: NavItem[] = [
 
 /* Mobile bottom bar — 5 most used items */
 const mobileBottomBar: NavItem[] = [
-  { label: "Home", icon: LayoutDashboard, path: "/" },
+  { label: "Início", icon: LayoutDashboard, path: "/painel" },
   { label: "Relatórios", icon: BarChart3, path: "/relatorios" },
   { label: "WhatsApp", icon: MessageCircle, path: "/whatsapp" },
   { label: "Tarefas", icon: ClipboardCheck, path: "/responsabilidades" },

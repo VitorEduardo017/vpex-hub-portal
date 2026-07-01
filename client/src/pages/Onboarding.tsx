@@ -63,10 +63,10 @@ const digitalAssetOptions = [
 ];
 
 const platformGuide = [
-  { icon: BarChart3, title: "Dashboard", desc: "Seu painel de guerra com KPIs em tempo real." },
+  { icon: BarChart3, title: "Painel Central", desc: "Seu painel de guerra com KPIs em tempo real." },
   { icon: TrendingUp, title: "Relatórios", desc: "Relatórios detalhados de marketing e operação." },
   { icon: Target, title: "Crescimento", desc: "Sua jornada gamificada com metas e conquistas." },
-  { icon: Users, title: "Academy", desc: "Treine sua equipe com cursos personalizados." },
+  { icon: Users, title: "Academia", desc: "Treine sua equipe com cursos personalizados." },
   { icon: Shield, title: "Suporte", desc: "Chat direto com a VPEX. Especialistas a um clique." },
   { icon: Rocket, title: "Inteligência", desc: "Análise profunda por área do seu negócio." },
 ];

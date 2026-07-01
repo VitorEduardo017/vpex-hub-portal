@@ -1,10 +1,11 @@
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/NotFound";
-import { Route, Switch } from "wouter";
+import { Route, Switch, useLocation } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import DashboardLayout from "./components/DashboardLayout";
+import { DashboardLayoutSkeleton } from "./components/DashboardLayoutSkeleton";
 import AdminLayout from "./components/AdminLayout";
 import Dashboard from "./pages/Dashboard";
 import Relatorios from "./pages/Relatorios";
@@ -20,6 +21,9 @@ import Inteligencia from "./pages/Inteligencia";
 import Planos from "./pages/Planos";
 import Configuracoes from "./pages/Configuracoes";
 import Login from "./pages/Login";
+import LandingPage from "./pages/LandingPage";
+import MeusProdutos from "./pages/MeusProdutos";
+import Checkout from "./pages/Checkout";
 import Onboarding from "./pages/Onboarding";
 import Indicacao from "./pages/Indicacao";
 import Responsabilidades from "./pages/Responsabilidades";
@@ -27,13 +31,32 @@ import Equipe from "./pages/Equipe";
 import Suporte from "./pages/Suporte";
 import Admin from "./pages/Admin";
 import AdminPlaceholder from "./pages/AdminPlaceholder";
+import { trpc } from "./lib/trpc";
 
+/* ─── Auth Guard ─── */
+function ProtectedRouter() {
+  const [, navigate] = useLocation();
+  const { data: user, isLoading } = trpc.auth.me.useQuery(undefined, {
+    retry: false,
+  });
+
+  if (isLoading) return <DashboardLayoutSkeleton />;
+
+  if (!user) {
+    navigate("/entrar");
+    return null;
+  }
+
+  return <DashboardRouter />;
+}
+
+/* ─── Hub Router (authenticated) ─── */
 function DashboardRouter() {
-  // make sure to consider if you need authentication for certain routes
   return (
     <DashboardLayout>
       <Switch>
-        <Route path="/" component={Dashboard} />
+        <Route path="/painel" component={Dashboard} />
+        <Route path="/meus-produtos" component={MeusProdutos} />
         <Route path="/relatorios" component={Relatorios} />
         <Route path="/documentos" component={Documentos} />
         <Route path="/entregas" component={Entregas} />
@@ -56,6 +79,7 @@ function DashboardRouter() {
   );
 }
 
+/* ─── Admin Router ─── */
 function AdminRouter() {
   return (
     <AdminLayout>
@@ -75,6 +99,7 @@ function AdminRouter() {
   );
 }
 
+/* ─── Root ─── */
 function App() {
   return (
     <ErrorBoundary>
@@ -82,11 +107,19 @@ function App() {
         <TooltipProvider>
           <Toaster />
           <Switch>
+            {/* Public */}
+            <Route path="/" component={LandingPage} />
+            <Route path="/entrar" component={Login} />
             <Route path="/login" component={Login} />
+            <Route path="/checkout" component={Checkout} />
             <Route path="/onboarding" component={Onboarding} />
+
+            {/* Admin */}
             <Route path="/admin/:rest*" component={AdminRouter} />
             <Route path="/admin" component={AdminRouter} />
-            <Route component={DashboardRouter} />
+
+            {/* Protected hub — all /painel/* + /meus-produtos + legacy routes */}
+            <Route component={ProtectedRouter} />
           </Switch>
         </TooltipProvider>
       </ThemeProvider>

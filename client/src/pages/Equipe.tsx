@@ -54,13 +54,13 @@ const statusConfig: Record<string, { label: string; color: string; bg: string }>
 };
 
 const allPermissions = [
-  { key: "dashboard", label: "Dashboard", desc: "Ver KPIs e gráficos" },
+  { key: "dashboard", label: "Painel Central", desc: "Ver KPIs e gráficos" },
   { key: "relatorios", label: "Relatórios", desc: "Acessar relatórios de marketing e operação" },
   { key: "documentos", label: "Documentos", desc: "Ver e enviar documentos" },
   { key: "whatsapp", label: "WhatsApp", desc: "Disparar mensagens" },
   { key: "pedidos", label: "Pedidos", desc: "Criar e gerenciar pedidos" },
   { key: "financeiro", label: "Financeiro", desc: "Ver dados financeiros" },
-  { key: "academy", label: "Academy", desc: "Acessar treinamentos" },
+  { key: "academy", label: "Academia", desc: "Acessar treinamentos" },
   { key: "configuracoes", label: "Configurações", desc: "Alterar configurações da empresa" },
 ];
 

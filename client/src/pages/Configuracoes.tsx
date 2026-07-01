@@ -218,13 +218,13 @@ export default function Configuracoes() {
   const [showAddMember, setShowAddMember] = useState(false);
   const [showMemberDetail, setShowMemberDetail] = useState<number | null>(null);
   const [teamMembers, setTeamMembers] = useState([
-    { id: 1, name: "Maria Silva", email: "maria@cacaushow.com", role: "Gerente", areas: ["Dashboard", "Relatórios", "Financeiro", "Equipe"], addedAt: "15/01/2026", lastAccess: "Hoje, 14:32", status: "ativo", avatar: "MS", duration: "Permanente" },
-    { id: 2, name: "João Santos", email: "joao@cacaushow.com", role: "Operador", areas: ["Dashboard", "Pedidos", "Estoque"], addedAt: "22/02/2026", lastAccess: "Ontem, 09:15", status: "ativo", avatar: "JS", duration: "6 meses" },
-    { id: 3, name: "Ana Costa", email: "ana@cacaushow.com", role: "Visualizador", areas: ["Dashboard", "Relatórios"], addedAt: "10/03/2026", lastAccess: "Há 3 dias", status: "ativo", avatar: "AC", duration: "Permanente" },
-    { id: 4, name: "Carlos Oliveira", email: "carlos@cacaushow.com", role: "Operador", areas: ["WhatsApp", "Academy"], addedAt: "01/03/2026", lastAccess: "Há 1 semana", status: "inativo", avatar: "CO", duration: "3 meses" },
+    { id: 1, name: "Maria Silva", email: "maria@cacaushow.com", role: "Gerente", areas: ["Painel Central", "Relatórios", "Financeiro", "Equipe"], addedAt: "15/01/2026", lastAccess: "Hoje, 14:32", status: "ativo", avatar: "MS", duration: "Permanente" },
+    { id: 2, name: "João Santos", email: "joao@cacaushow.com", role: "Operador", areas: ["Painel Central", "Pedidos", "Estoque"], addedAt: "22/02/2026", lastAccess: "Ontem, 09:15", status: "ativo", avatar: "JS", duration: "6 meses" },
+    { id: 3, name: "Ana Costa", email: "ana@cacaushow.com", role: "Visualizador", areas: ["Painel Central", "Relatórios"], addedAt: "10/03/2026", lastAccess: "Há 3 dias", status: "ativo", avatar: "AC", duration: "Permanente" },
+    { id: 4, name: "Carlos Oliveira", email: "carlos@cacaushow.com", role: "Operador", areas: ["WhatsApp", "Academia"], addedAt: "01/03/2026", lastAccess: "Há 1 semana", status: "inativo", avatar: "CO", duration: "3 meses" },
   ]);
   const [newMember, setNewMember] = useState({ name: "", email: "", role: "Visualizador", areas: [] as string[], duration: "Permanente" });
-  const allAreas = ["Dashboard", "Relatórios", "Documentos", "Entregas", "WhatsApp", "Pedidos", "Academy", "Crescimento", "Integrações", "Inteligência", "Financeiro", "Equipe", "Configurações"];
+  const allAreas = ["Painel Central", "Relatórios", "Documentos", "Entregas", "WhatsApp", "Pedidos", "Academia", "Crescimento", "Integrações", "Inteligência", "Financeiro", "Equipe", "Configurações"];
   const roleColors: Record<string, string> = { "Administrador": "text-[#39FF14] bg-[#39FF14]/10 border-[#39FF14]/30", "Gerente": "text-blue-400 bg-blue-400/10 border-blue-400/30", "Operador": "text-amber-400 bg-amber-400/10 border-amber-400/30", "Visualizador": "text-white/50 bg-white/5 border-white/10" };
 
   /* Segurança State */
@@ -638,7 +638,7 @@ export default function Configuracoes() {
                 />
                 <NotificationRow
                   icon={MessageCircle}
-                  title="VPEX Academy"
+                  title="VPEX Academia"
                   description="Novos treinamentos, certificações e prazos de conclusão"
                   channels={{
                     ...notifs.academy,
@@ -749,7 +749,7 @@ export default function Configuracoes() {
                     onChange={(e) => setPrefs({ ...prefs, dashboardInicial: e.target.value })}
                     className="w-full sm:w-64 px-3 py-2.5 rounded-lg bg-muted/15 border border-border text-sm text-foreground focus:outline-none focus:border-vpex-green/40 transition-all"
                   >
-                    <option value="visao-geral">Dashboard — Visão Geral</option>
+                    <option value="visao-geral">Painel Central — Visão Geral</option>
                     <option value="relatorios">Relatórios</option>
                     <option value="crescimento">Crescimento Gamificado</option>
                     <option value="whatsapp">WhatsApp API</option>

@@ -1,19 +1,12 @@
 {
   "version": "7",
-  "dialect": "mysql",
+  "dialect": "postgresql",
   "entries": [
     {
       "idx": 0,
-      "version": "5",
-      "when": 1775389236490,
-      "tag": "0000_wonderful_secret_warriors",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "5",
-      "when": 1775389783715,
-      "tag": "0001_simple_boom_boom",
+      "version": "7",
+      "when": 1782927269549,
+      "tag": "0000_init_postgresql",
       "breakpoints": true
     }
   ]

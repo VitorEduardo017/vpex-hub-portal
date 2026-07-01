@@ -51,7 +51,7 @@ const cursos: Course[] = [
     category: "Comercial",
     duration: "2h 30min",
     required: true,
-    instructor: "VPEX Academy",
+    instructor: "VPEX Academia",
     description: "Domine as técnicas de vendas que geram resultados consistentes para franquias.",
     certificateAvailable: true,
     lessons: [
@@ -70,7 +70,7 @@ const cursos: Course[] = [
     category: "Comercial",
     duration: "1h 45min",
     required: true,
-    instructor: "VPEX Academy",
+    instructor: "VPEX Academia",
     description: "Transforme cada atendimento em uma experiência que fideliza.",
     certificateAvailable: true,
     lessons: [
@@ -87,7 +87,7 @@ const cursos: Course[] = [
     category: "Logística",
     duration: "1h 20min",
     required: false,
-    instructor: "VPEX Academy",
+    instructor: "VPEX Academia",
     description: "Controle seu estoque para nunca perder vendas por ruptura.",
     certificateAvailable: false,
     lessons: [
@@ -103,7 +103,7 @@ const cursos: Course[] = [
     category: "Marketing",
     duration: "3h 15min",
     required: false,
-    instructor: "VPEX Academy",
+    instructor: "VPEX Academia",
     description: "Entenda os fundamentos do marketing digital para sua franquia.",
     certificateAvailable: true,
     lessons: [
@@ -124,7 +124,7 @@ const cursos: Course[] = [
     category: "RH",
     duration: "55min",
     required: false,
-    instructor: "VPEX Academy",
+    instructor: "VPEX Academia",
     description: "Estruture os processos de RH da sua operação.",
     certificateAvailable: false,
     lessons: [
@@ -139,7 +139,7 @@ const cursos: Course[] = [
     category: "Gestão",
     duration: "2h",
     required: true,
-    instructor: "VPEX Academy",
+    instructor: "VPEX Academia",
     description: "Aprenda a ler os números do seu negócio e tomar decisões com dados.",
     certificateAvailable: true,
     lessons: [
@@ -178,7 +178,7 @@ export default function Academy() {
         {/* Header */}
         <motion.div variants={fadeUp} className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
-            <h2 className="text-2xl font-bold font-[Sora] text-foreground">VPEX Academy</h2>
+            <h2 className="text-2xl font-bold font-[Sora] text-foreground">VPEX Academia</h2>
             <p className="text-sm text-muted-foreground">Treine sua equipe com processos de elite</p>
           </div>
           <div className="flex gap-2">
@@ -459,7 +459,7 @@ export default function Academy() {
                 </motion.div>
 
                 <h3 className="text-lg font-bold font-[Sora] text-foreground mb-1">Certificado de Conclusão</h3>
-                <p className="text-xs text-muted-foreground mb-6">VPEX Academy · Programa de Treinamento</p>
+                <p className="text-xs text-muted-foreground mb-6">VPEX Academia · Programa de Treinamento</p>
 
                 <div className="bg-white/[0.03] border border-white/10 rounded-lg p-6 mb-6">
                   <p className="text-xs text-muted-foreground mb-2">Certificamos que</p>
