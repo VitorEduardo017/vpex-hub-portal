@@ -28,9 +28,10 @@ import { ENV } from "./_core/env";
 let _db: PostgresJsDatabase | null = null;
 
 export async function getDb(): Promise<PostgresJsDatabase | null> {
-  if (!_db && process.env.DATABASE_URL) {
+  const url = process.env.DATABASE_URL?.trim();
+  if (!_db && url) {
     try {
-      const client = postgres(process.env.DATABASE_URL, {
+      const client = postgres(url, {
         ssl: "require",
         max: 1,
         prepare: false,
