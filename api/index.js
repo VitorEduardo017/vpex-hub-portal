@@ -304,7 +304,6 @@ async function getDb() {
       const client = postgres(url, {
         ssl: "require",
         max: 1,
-        prepare: false,
         idle_timeout: 20,
         max_lifetime: 60 * 30
       });
