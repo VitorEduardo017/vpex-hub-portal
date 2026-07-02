@@ -1,9 +1,6 @@
-import dns from "node:dns";
-dns.setDefaultResultOrder("ipv4first");
-
 import { eq, desc, and, gte, lte, asc } from "drizzle-orm";
-import { drizzle, type PostgresJsDatabase } from "drizzle-orm/postgres-js";
-import postgres from "postgres";
+import { drizzle, type NodePgDatabase } from "drizzle-orm/node-postgres";
+import { Pool } from "pg";
 import {
   InsertUser,
   users,
@@ -28,22 +25,20 @@ import {
 } from "../drizzle/schema";
 import { ENV } from "./_core/env";
 
-let _db: PostgresJsDatabase | null = null;
+let _db: NodePgDatabase | null = null;
 
-export async function getDb(): Promise<PostgresJsDatabase | null> {
+export async function getDb(): Promise<NodePgDatabase | null> {
   const url = process.env.DATABASE_URL?.trim();
   if (!_db && url) {
     try {
-      const client = postgres(url, {
-        ssl: "require",
+      const pool = new Pool({
+        connectionString: url,
+        ssl: { rejectUnauthorized: false },
         max: 1,
-        prepare: false,
-        fetch_types: false,
-        connect_timeout: 10,
-        idle_timeout: 20,
-        max_lifetime: 60 * 30,
+        idleTimeoutMillis: 20000,
+        connectionTimeoutMillis: 10000,
       });
-      _db = drizzle(client);
+      _db = drizzle({ client: pool });
     } catch (error) {
       console.warn("[Database] Failed to connect:", error);
     }

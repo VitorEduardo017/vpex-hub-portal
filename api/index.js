@@ -14,10 +14,9 @@ import bcrypt from "bcryptjs";
 import { nanoid } from "nanoid";
 
 // server/db.ts
-import dns from "node:dns";
 import { eq, desc, and, gte, lte, asc } from "drizzle-orm";
-import { drizzle } from "drizzle-orm/postgres-js";
-import postgres from "postgres";
+import { drizzle } from "drizzle-orm/node-postgres";
+import { Pool } from "pg";
 
 // drizzle/schema.ts
 import {
@@ -297,22 +296,19 @@ var ENV = {
 };
 
 // server/db.ts
-dns.setDefaultResultOrder("ipv4first");
 var _db = null;
 async function getDb() {
   const url = process.env.DATABASE_URL?.trim();
   if (!_db && url) {
     try {
-      const client = postgres(url, {
-        ssl: "require",
+      const pool = new Pool({
+        connectionString: url,
+        ssl: { rejectUnauthorized: false },
         max: 1,
-        prepare: false,
-        fetch_types: false,
-        connect_timeout: 10,
-        idle_timeout: 20,
-        max_lifetime: 60 * 30
+        idleTimeoutMillis: 2e4,
+        connectionTimeoutMillis: 1e4
       });
-      _db = drizzle(client);
+      _db = drizzle({ client: pool });
     } catch (error) {
       console.warn("[Database] Failed to connect:", error);
     }
